@@ -1,5 +1,5 @@
 /*
- Scrollup v1.0
+ Scrollup v1.1a
  Author: Don Wasik
  Git: https://github.com/MentalNinja/Superscroll
 
@@ -9,10 +9,10 @@
  */
 
 ;(function($, window, document, undefined) {
-  //Main Plugin Vars
+  //Define main plugin variables
   var defaults = {
-        append: false,
-        scrollName: "scrollup",
+        scrollUp: true,
+        scrollUpName: "scrollup",
         scrollHash: true,
         scrollLocalHash: true,
         scrollExternalHash: true,
@@ -30,19 +30,43 @@
 
   //Define main plugin
   $.superscroll = function(element, options) {
-    //Define variables
+    //Define main plugin variables
+    var elementDefaultCSS = {
+          display: "none",
+          height: "auto",
+          width: "auto",
+          cursor: "pointer",
+          position: "fixed",
+          bottom: "15px",
+          right: "25px",
+          zIndex: "999"
+        };
+    var rules = document.styleSheets[0].rules || document.styleSheets[0].cssRules;
+    var old_console_log = console.log;
     var viewport = $('html, body');
     var canceledScroll = false;
+    var elementHasCSS = false;
     var debug = true;
 
+    //Check if plugin being used in object or global scope
     if(element && !element.length && !$.isEmptyObject(element)) {
       options = element;
     }
 
+    //Apply any options to the settings, override the defaults
     var settings = $.extend({}, defaults, options);
 
+    //Check if element has css associated with it
+    if(settings.scrollUp) {
+      for(var i in rules) {
+        if(typeof rules[i].selectorText != 'undefined' && rules[i].selectorText.indexOf("#" + settings.scrollUpName) >= 0) {
+          elementHasCSS = true;
+        }
+      }
+    }
 
-    //Cancel scroll
+
+    //Cancel scroll function
     $.fn.cancelScroll = function() {
       viewport.bind("scroll mousedown DOMMouseScroll mousewheel keyup", function(e) {
         if(e.which > 0 || e.type === "mousedown" || e.type === "mousewheel") {
@@ -50,22 +74,26 @@
           canceledScroll = true;
           clearHash();
           pluginCallback();
-          if(element && element.length && element.is(":visible")) {
+          if(element && element.length && element.is(":visible") && elementHasCSS) {
             element.finish().stop().clearQueue().attr("style", "display: block;").unwrap();
+          } else {
+            elementDefaultCSS.display = "block";
+            element.finish().stop().clearQueue().removeAttr("style").css(elementDefaultCSS).unwrap();
           }
         }
       });
     };
 
-    //Debug Toggle
-    var old_console_log = console.log;
+
+    //Debug toggle
     console.log = function() {
       if(debug) {
         old_console_log.apply(this, arguments);
       }
     };
 
-    //Clear Hashes
+
+    //Clear hashes from url function
     function clearHash() {
       if(!settings.showHashURL) {
         if(window.history && window.history.pushState) { 
@@ -91,25 +119,28 @@
     }
 
 
-    //Check if user wants to append scrollup element using plugin instead of define element in html
-    if(settings.append && element && !element.length && !$.isEmptyObject(element) && !$("#" + scrollName).length) {
-      console.log("Superscroll - append setting is true, successfully created scroll element!");
-      element = $('<div id="' + scrollName + '" />').appendTo("body");
-    } else if(settings.append && element && $("#" + scrollName).length && $.isEmptyObject(element)) {
-      console.log("Superscroll - append setting is true, but element already exists in html! Use plugin in the object method instead!");
-    } else if(settings.append && element && element.length && !$.isEmptyObject(element)) {
-      console.log("Superscroll - append setting is true, but element already exists in html! Ignoring and using element already in html!");
-    } else if(settings.append && element && $("#" + scrollName).length && !$.isEmptyObject(element)) {
-      console.log("Superscroll - append setting is true, but element already exists in html! Ignoring and using element already in html!");
-      element = $("#" + scrollName);
-    }
-
-
     //Check if debugging enabled by user
     if(!settings.debug) {
       debug = false;
     } else {
       console.log("Superscroll - successfully initialized debugging! :)");
+    }
+
+
+    //Check if user wants to create scrollup element using plugin
+    if(settings.scrollUp && element && !element.length && !$.isEmptyObject(element) && !$("#" + settings.scrollUpName).length) {
+      console.log("Superscroll - successfully created scroll element: #" + settings.scrollUpName + "! :)");
+      element = $("#" + settings.scrollUpName);
+
+      if(elementHasCSS) {
+        element = $('<div id="' + settings.scrollUpName + '" />').appendTo("body");
+        console.log("Superscroll - successfully used user defined css for scrollup element! :)");
+      } else {
+        element = $('<div id="' + settings.scrollUpName + '" />').css(elementDefaultCSS).text("Scroll to top").appendTo("body");
+        console.log("Superscroll - no user defined css for scrollup element! Using defaults instead! :/");
+      }
+    } else if(settings.scrollUp && element && $("#" + settings.scrollUpName).length && $.isEmptyObject(element)) {
+      console.log("Superscroll - scrollUp setting is true, but element already exists in html! Use plugin in the object method instead!");
     }
 
 
