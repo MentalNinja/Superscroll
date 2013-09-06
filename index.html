@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Superscroll</title>
+    <style>
+      @import url('http://fonts.googleapis.com/css?family=Lato:300,400,700');
+      html, body {
+        font-family: Lato, sans-serif;
+        font-weight: bold;
+        background-color: #EEE;
+        margin: 0;
+        padding: 0;
+      }
+      a, a:hover, a:active, a:visited {
+        font-size: 20px;
+        color: #D14;
+        outline: none;
+      }
+      p {
+        font-weight: normal;
+        margin: 5px 0 0 0;
+      }
+      #top, #one, #two {
+        height: 2000px;
+        width: 75%;
+        margin: 0 auto 20px auto;
+        padding: 15px;
+        background-color: #DDD;
+        border: 3px solid #CCC;
+      }
+      #top {
+        height: auto;
+        font-size: 24px;
+        margin-top: 20px;
+      }
+      #two {
+        background-color: #CCC;
+        border: 3px solid #BBB;
+      }
+      #scrollup {
+        width: 32px;
+        height: 32px;
+        position: fixed;
+        bottom: 15px;
+        right: 25px;
+        display: none;
+        background: url('img/up.png') no-repeat;
+        cursor: pointer;
+        z-index: 999;
+      }
+    </style>
+  </head>
+  
+  <body>
+    <!-- Begin Body Content -->
+    <div id="top">
+      Superscroll v1.0
+      <p>This page has the plugin's main scrollup feature active on a fixed position element, scroll down for it to appear, or click on a link on this page to use this plugin's hash scroll feature.</p>
+    </div>
+    <div id="one"><a href="index.html#linkTwo" id="linkOne">Local hash - Click to scroll to a link at the bottom of this page!</a></div>
+    <div id="two"><a href="index2.html#linkThree" id="linkTwo">External hash - Click to scroll to a link at the bottom of the next page!</a></div>
+    <div id="scrollup"></div>
+    <!-- End Body Content -->
+
+
+    <!-- Begin Scripts-->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" type="text/javascript"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.0/jquery-ui.min.js" type="text/javascript"></script>
+    <script src="js/jquery.superscroll.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $("#scrollup").superscroll({
+          callback: function() {
+            console.log("Callback!");
+          },
+          debug: true
+        });
+      });
+    </script>
+    <!-- End Scripts -->
+  </body>
+</html>
