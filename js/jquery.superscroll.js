@@ -95,8 +95,8 @@
 
     //Bounce animation
     function bounce() {
-      for(i = 1; i < 5; i++) {
-        element.animate({bottom: '+=' + 15 / i + "px"}, 90).animate({bottom: '-=' + 15 / i + "px"}, 90);
+      for(i = 1; i < 4; i++) {
+        element.animate({bottom: '+=' + 12 / i + "px"}, 90).animate({bottom: '-=' + 12 / i + "px"}, 90);
       }
     }
 
@@ -224,7 +224,7 @@
           if($(this).scrollTop() >= settings.fadeInHeight) {
             element.fadeIn(settings.fadeInSpeed);
           } else {
-            element.stop().fadeOut(settings.fadeOutSpeed);
+            element.fadeOut(settings.fadeOutSpeed);
           }
         } else {
           if($(this).scrollTop()) {
