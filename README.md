@@ -16,18 +16,18 @@ Is as easy as 1. 2. Done. 3 feels lonely :(
 
 #### Step 1 (include)
 
-Include the `jquery.superscroll.min.js` file and place one of the examples from usage below in the head of your document with it (make sure jQuery is included first, then JQuery UI if you want the bounce animation, then a usage example.).
+Include the `jquery.superscroll.min.js` file and place one of the examples from usage below in the head of your document with it (make sure jQuery is included first, then a usage example.).
 
 #### Step 2 (style)
 
-Style it however you want! Don't want to? Fine! Don't include any css and the plugin will create defaults for you! Although the recommended example css below would look better ;)
+Style it however you want! If you don't include any css and the plugin will create defaults for you, although the recommended example css below would look better ;)
 
 **Recommended css example**
 
 This is the example that is used in the demo included in the download.
 
 ```
-#scrollUp {
+#scrollup {
   width: 32px;
   height: 32px;
   position: fixed;
