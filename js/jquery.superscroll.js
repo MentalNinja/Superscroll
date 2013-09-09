@@ -1,5 +1,5 @@
 /*
- Scrollup v1.1a
+ Scrollup v1.2a
  Author: Don Wasik
  Git: https://github.com/MentalNinja/Superscroll
 
@@ -91,6 +91,14 @@
         old_console_log.apply(this, arguments);
       }
     };
+
+
+    //Bounce animation
+    function bounce() {
+      for(i = 1; i < 5; i++) {
+        element.animate({bottom: '+=' + 15 / i + "px"}, 90).animate({bottom: '-=' + 15 / i + "px"}, 90);
+      }
+    }
 
 
     //Clear hashes from url function
@@ -198,45 +206,46 @@
 
     //Initilize plugin if the element exists that the user is trying to call plugin on
     if(element && element.length) {
+      var atTop = true;
+      if(settings.scrollPersistent) {
+        element.fadeIn(0);
+      }
+
       if(element.attr("id")) {
         console.log('Superscroll - successfully initialized scrollup on the element: "#' + element.attr("id") + '"! :)');
       } else if(element.attr("class")) {
         console.log('Superscroll - successfully initialized scrollup on the element: ".' + element.attr("class") + '"! :)');
       }
 
-      if(settings.scrollPersistent) {
-        element.fadeIn(0).click(function() {
-          if(jQuery.ui && settings.scrollAnimation && element.css("position") === "fixed") {
-            element.effect("bounce", {direction: "up"}, settings.scrollSpeedUp * 0.75, function() {
-              element.stop(true).clearQueue();
-            });
-          }
-          viewport.stop().animate({scrollTop: settings.top}, settings.scrollSpeedUp, function() {
-            clearHash();
-            pluginCallback();
-          }).cancelScroll();
-        });
-      } else {
-        $(window).scroll(function(){
+      $(window).scroll(function() {
+        if(!settings.scrollPersistent && element.css("position") === "fixed") {
+          atTop = false;
+
           if($(this).scrollTop() >= settings.fadeInHeight) {
             element.fadeIn(settings.fadeInSpeed);
           } else {
-            element.fadeOut(settings.fadeOutSpeed);
+            element.stop().fadeOut(settings.fadeOutSpeed);
           }
-        });
+        } else {
+          if($(this).scrollTop()) {
+            atTop = false;
+          } else {
+            atTop = true;
+          }
+        }
+      });
 
-        element.click(function() {
-          if(jQuery.ui && settings.scrollAnimation && element.css("position") === "fixed") {
-            element.effect("bounce", {direction: "up"}, settings.scrollSpeedUp * 0.75, function() {
-              element.stop(true).clearQueue().fadeOut(settings.fadeOutSpeed);
-            });
+      element.click(function() {
+        if(!atTop) {
+          if(settings.scrollAnimation && element.css("position") === "fixed") {
+            bounce();
           }
           viewport.stop().animate({scrollTop: settings.top}, settings.scrollSpeedUp, function() {
             clearHash();
             pluginCallback();
           }).cancelScroll();
-        });
-      }
+        }
+      });
     } else {
       console.log("Superscroll - no user defined element detected! Using hash scroll only.");
     }
